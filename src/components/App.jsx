@@ -1,37 +1,29 @@
 // import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { Section } from './Section/Section';
-import { Statistics } from './Statistics/Statistics';
-import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { nanoid } from 'nanoid';
 import { Box } from './Box/Box';
-import { Notification } from './Notification/Notification';
+import { Section } from './Section/Section';
+import { ContactForm } from './ContactForm/ContactForm';
+import { ContactsList } from './ContactsList/ContactsList';
+
 
 export class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+    contacts: [],
+    filter: '',
   };
 
-  onLeaveFeedback = event => {
-    const target = event.target.name;
+  formSubmitHandler = ({ name, number }) => {
+    const contact = {
+      id: nanoid(),
+      name,
+      number,
+    }
 
-    this.setState(prevState => {
-      return {
-        [target]: prevState[target] + 1,
-      };
-    });
+    this.setState(prevContact => ({
+      contacts: [contact, ...prevContact.contacts],
+    }));
   };
-
-  countTotalFeedback() {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
-  }
-
-  countPositiveFeedbackPercentage() {
-    const { good, neutral, bad } = this.state;
-    return Math.round((good * 100) / (good + neutral + bad))
-  }
 
   render() {
     return (
@@ -41,20 +33,21 @@ export class App extends Component {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          fontSize: 40,
+          fontSize: 20,
           color: '#010101',
         }}
       >
-        <Box
-          width="1200px"
-          p="20px"
-          lineHeight="1"
-          borderRadius="4px"
-          bg="rgb(249, 249, 249)"
-          display="flex"
-          flexDirection="column"
-        >
-          <Section title="Please leave feedback">
+        <Box p="20px" lineHeight="1" display="flex" flexDirection="column">
+          <Section title="Phonebook">
+            <ContactForm onSubmit={this.formSubmitHandler} />
+          </Section>
+          {this.state.contacts.length !== 0 && (
+            <Section title="Contacts">
+              <ContactsList contacts={this.state.contacts} />
+            </Section>
+          )}
+
+          {/* <Section title="Please leave feedback">
             <FeedbackOptions
               options={Object.keys(this.state)}
               onLeaveFeedback={this.onLeaveFeedback}
@@ -72,7 +65,7 @@ export class App extends Component {
                 positivePercentage={this.countPositiveFeedbackPercentage()}
               />
             </Section>
-          )}
+          )} */}
         </Box>
       </div>
     );
