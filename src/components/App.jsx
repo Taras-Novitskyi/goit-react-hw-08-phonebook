@@ -1,11 +1,10 @@
-// import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 import { Box } from './Box/Box';
 import { Section } from './Section/Section';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactsList/ContactsList';
-
+import { Filter } from './Fillter/Fillter';
 
 export class App extends Component {
   state = {
@@ -14,22 +13,50 @@ export class App extends Component {
   };
 
   formSubmitHandler = ({ name, number }) => {
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-    }
+    const newName = name;
+    const dublicate = this.state.contacts.find(({ name }) => name === newName);
 
-    this.setState(prevContact => ({
-      contacts: [contact, ...prevContact.contacts],
+    if (dublicate) {
+      alert(`${newName} is already in contacts.`);
+    } else {
+      const contact = {
+        id: nanoid(),
+        name,
+        number,
+      };
+
+      this.setState(prevContact => ({
+        contacts: [contact, ...prevContact.contacts],
+      }));
+    }
+  };
+
+  onFind = event => {
+    this.setState({ filter: event.currentTarget.value });
+  };
+
+  getVisibleContacts = () => {
+    const { contacts, filter } = this.state;
+    const normalizeFilter = filter.toLowerCase();
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizeFilter)
+    );
+  };
+
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
 
   render() {
+    const visibleContacts = this.getVisibleContacts();
+
     return (
       <div
         style={{
-          height: '100vh',
+          minHeight: '100vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -37,49 +64,29 @@ export class App extends Component {
           color: '#010101',
         }}
       >
-        <Box p="20px" lineHeight="1" display="flex" flexDirection="column">
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          p="30px"
+          overflow="auto"
+          borderRadius="4px"
+          bg="rgb(249, 249, 249)"
+        >
           <Section title="Phonebook">
             <ContactForm onSubmit={this.formSubmitHandler} />
           </Section>
           {this.state.contacts.length !== 0 && (
             <Section title="Contacts">
-              <ContactsList contacts={this.state.contacts} />
-            </Section>
-          )}
-
-          {/* <Section title="Please leave feedback">
-            <FeedbackOptions
-              options={Object.keys(this.state)}
-              onLeaveFeedback={this.onLeaveFeedback}
-            />
-          </Section>
-          {this.countTotalFeedback() === 0 ? (
-            <Notification message="There is no feedback" />
-          ) : (
-            <Section title="Statistics">
-              <Statistics
-                good={this.state.good}
-                neutral={this.state.neutral}
-                bad={this.state.bad}
-                total={this.countTotalFeedback()}
-                positivePercentage={this.countPositiveFeedbackPercentage()}
+              <Filter onFind={this.onFind} value={this.state.filter} />
+              <ContactsList
+                contacts={visibleContacts}
+                onDeleteContact={this.deleteContact}
               />
             </Section>
-          )} */}
+          )}
         </Box>
       </div>
     );
   }
 }
-
-
-// App.propTypes = {
-//   title: PropTypes.string,
-//   message: PropTypes.string,
-//   options: PropTypes.arrayOf(PropTypes.number),
-//   good: PropTypes.number.isRequired,
-//   neutral: PropTypes.number.isRequired,
-//   bad: PropTypes.number.isRequired,
-//   total: PropTypes.number.isRequired,
-//   positivePercentage: PropTypes.number.isRequired,
-// };

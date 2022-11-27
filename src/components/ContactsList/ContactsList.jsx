@@ -1,27 +1,32 @@
 import PropTypes from 'prop-types';
-import { nanoid } from 'nanoid';
 import { ContactItem } from '../ContactItem/ContactItem';
-import { Input } from './ContactsList.styled';
+import { List, Item } from './ContactsList.styled';
 
-export const ContactsList = ({ contacts }) => {
-
+export const ContactsList = ({ contacts, onDeleteContact }) => {
   return (
-    <>
-      <label>
-        Find contacts by name
-        <Input type="text" />
-      </label>
-      <ul>
-        {contacts.map(({ name, number }) => (
-          <li key={nanoid()}>
-            <ContactItem name={name} number={number} />
-          </li>
-        ))}
-      </ul>
-    </>
+      <List>
+        {contacts.map(({ id, name, number }) => {
+          return (
+            <Item key={id}>
+              <ContactItem
+                id={id}
+                name={name}
+                number={number}
+                onDeleteContact={onDeleteContact}
+              />
+            </Item>
+          );
+        })}
+      </List>
   );
 };
 
-Notification.propTypes = {
-  massage: PropTypes.string,
+ContactsList.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
+  onDeleteContact: PropTypes.func.isRequired,
 };

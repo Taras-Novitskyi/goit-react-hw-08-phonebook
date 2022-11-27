@@ -1,6 +1,6 @@
 import { Component } from 'react';
 // import { Box } from 'components/Box/Box';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Button } from './ContactForm.styled';
 import { Form } from './ContactForm.styled';
 import { Input } from './ContactForm.styled';
@@ -63,7 +63,6 @@ export class ContactForm extends Component {
   }
 }
 
-// ContactForm.propTypes = {
-//   options: PropTypes.arrayOf(PropTypes.string).isRequired,
-//   onLeaveFeedback: PropTypes.func,
-// };
+ContactForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
