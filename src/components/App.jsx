@@ -59,7 +59,7 @@ export class App extends Component {
           minHeight: '100vh',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: 'start',
           fontSize: 20,
           color: '#010101',
         }}
@@ -68,7 +68,7 @@ export class App extends Component {
           display="flex"
           flexDirection="column"
           justifyContent="center"
-          p="30px"
+          p="50px"
           overflow="auto"
           borderRadius="4px"
           bg="rgb(249, 249, 249)"
