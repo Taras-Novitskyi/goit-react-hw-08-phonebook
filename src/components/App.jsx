@@ -12,6 +12,21 @@ export class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsContacts = JSON.parse(contacts);
+
+    if (parsContacts) {
+      this.setState({ contacts: parsContacts });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+};
+
   formSubmitHandler = ({ name, number }) => {
     const newName = name;
     const dublicate = this.state.contacts.find(({ name }) => name === newName);
