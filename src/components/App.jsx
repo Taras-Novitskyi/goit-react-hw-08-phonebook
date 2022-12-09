@@ -83,6 +83,7 @@ export class App extends Component {
           display="flex"
           flexDirection="column"
           justifyContent="center"
+          width="320px"
           p="50px"
           overflow="auto"
           borderRadius="4px"

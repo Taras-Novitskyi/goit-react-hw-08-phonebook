@@ -21,3 +21,14 @@ export const Button = styled.button`
     box-shadow: 1px 3px 3px 0px rgba(150, 150, 150, 1);
     transform: translate(-1px, -1px);
 `;
+
+export const Data = styled.p`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space:nowrap;
+
+    :hover {
+    overflow: unset;
+    white-space: normal;
+    text-overflow: clip;
+  `;

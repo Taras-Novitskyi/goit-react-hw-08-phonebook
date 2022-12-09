@@ -8,6 +8,10 @@ import { Input } from './ContactForm.styled';
 
 
 export class ContactForm extends Component {
+  static propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  }
+
   state = {
     name: '',
     number: '',
@@ -63,6 +67,4 @@ export class ContactForm extends Component {
   }
 }
 
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+
