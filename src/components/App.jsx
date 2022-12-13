@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Box } from './Box/Box';
 import { Section } from './Section/Section';
@@ -6,30 +6,21 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactsList/ContactsList';
 import { Filter } from './Fillter/Fillter';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const saveContacts = JSON.parse(localStorage.getItem('contacts'));
 
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsContacts = JSON.parse(contacts);
+export function App() {
+  const [contacts, setContact] = useState(() =>
+    saveContacts ? saveContacts : []
+  );
+  const [filter, setFilter] = useState('');
 
-    if (parsContacts) {
-      this.setState({ contacts: parsContacts });
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  componentDidUpdate(_, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-};
-
-  formSubmitHandler = ({ name, number }) => {
+  const formSubmitHandler = (name, number) => {
     const newName = name;
-    const dublicate = this.state.contacts.find(({ name }) => name === newName);
+    const dublicate = contacts.find(({ name }) => name === newName);
 
     if (dublicate) {
       alert(`${newName} is already in contacts.`);
@@ -40,18 +31,15 @@ export class App extends Component {
         number,
       };
 
-      this.setState(prevContact => ({
-        contacts: [contact, ...prevContact.contacts],
-      }));
+      setContact(prevContacts => [contact, ...prevContacts]);
     }
   };
 
-  onFind = event => {
-    this.setState({ filter: event.currentTarget.value });
+  const onFind = event => {
+    setFilter(event.currentTarget.value);
   };
 
-  getVisibleContacts = () => {
-    const { contacts, filter } = this.state;
+  const getVisibleContacts = () => {
     const normalizeFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
@@ -59,50 +47,46 @@ export class App extends Component {
     );
   };
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
+  const deleteContact = contactId => {
+    setContact(prevState =>
+      prevState.filter(contact => contact.id !== contactId)
+    );
   };
 
-  render() {
-    const visibleContacts = this.getVisibleContacts();
-
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
-          fontSize: 20,
-          color: '#010101',
-        }}
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'start',
+        fontSize: 20,
+        color: '#010101',
+      }}
+    >
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        width="320px"
+        p="50px"
+        overflow="auto"
+        borderRadius="4px"
+        bg="rgb(249, 249, 249)"
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          width="320px"
-          p="50px"
-          overflow="auto"
-          borderRadius="4px"
-          bg="rgb(249, 249, 249)"
-        >
-          <Section title="Phonebook">
-            <ContactForm onSubmit={this.formSubmitHandler} />
+        <Section title="Phonebook">
+          <ContactForm onSubmit={formSubmitHandler} />
+        </Section>
+        {contacts.length !== 0 && (
+          <Section title="Contacts">
+            <Filter onFind={onFind} value={filter} />
+            <ContactsList
+              contacts={getVisibleContacts()}
+              onDeleteContact={deleteContact}
+            />
           </Section>
-          {this.state.contacts.length !== 0 && (
-            <Section title="Contacts">
-              <Filter onFind={this.onFind} value={this.state.filter} />
-              <ContactsList
-                contacts={visibleContacts}
-                onDeleteContact={this.deleteContact}
-              />
-            </Section>
-          )}
-        </Box>
-      </div>
-    );
-  }
+        )}
+      </Box>
+    </div>
+  );
 }
