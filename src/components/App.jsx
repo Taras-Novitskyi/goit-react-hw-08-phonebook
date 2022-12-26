@@ -1,57 +1,12 @@
-import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
+import { useSelector } from 'react-redux';
 import { Box } from './Box/Box';
 import { Section } from './Section/Section';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactsList/ContactsList';
 import { Filter } from './Fillter/Fillter';
 
-const saveContacts = JSON.parse(localStorage.getItem('contacts'));
-
 export function App() {
-  const [contacts, setContact] = useState(() =>
-    saveContacts ? saveContacts : []
-  );
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
-  const formSubmitHandler = (name, number) => {
-    const newName = name;
-    const dublicate = contacts.find(({ name }) => name === newName);
-
-    if (dublicate) {
-      alert(`${newName} is already in contacts.`);
-    } else {
-      const contact = {
-        id: nanoid(),
-        name,
-        number,
-      };
-
-      setContact(prevContacts => [contact, ...prevContacts]);
-    }
-  };
-
-  const onFind = event => {
-    setFilter(event.currentTarget.value);
-  };
-
-  const getVisibleContacts = () => {
-    const normalizeFilter = filter.toLowerCase();
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizeFilter)
-    );
-  };
-
-  const deleteContact = contactId => {
-    setContact(prevState =>
-      prevState.filter(contact => contact.id !== contactId)
-    );
-  };
+  const contacts = useSelector(state => state.contacts);
 
   return (
     <div
@@ -75,15 +30,12 @@ export function App() {
         bg="rgb(249, 249, 249)"
       >
         <Section title="Phonebook">
-          <ContactForm onSubmit={formSubmitHandler} />
+          <ContactForm />
         </Section>
         {contacts.length !== 0 && (
           <Section title="Contacts">
-            <Filter onFind={onFind} value={filter} />
-            <ContactsList
-              contacts={getVisibleContacts()}
-              onDeleteContact={deleteContact}
-            />
+            <Filter />
+            <ContactsList />
           </Section>
         )}
       </Box>

@@ -1,32 +1,54 @@
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+// import PropTypes from 'prop-types';
 import { ContactItem } from '../ContactItem/ContactItem';
 import { List, Item } from './ContactsList.styled';
+import { getContacts } from 'redux/contactsSlice';
+import { getFilter } from 'redux/filterSlice';
 
-export const ContactsList = ({ contacts, onDeleteContact }) => {
-  return (
-      <List>
-        {contacts.map(({ id, name, number }) => {
-          return (
-            <Item key={id}>
-              <ContactItem
-                id={id}
-                name={name}
-                number={number}
-                onDeleteContact={onDeleteContact}
-              />
-            </Item>
-          );
-        })}
-      </List>
+const getVisibleContacts = (contacts, filter) => {
+  const normalizeFilter = filter.toLowerCase();
+
+  if (normalizeFilter === '') {
+    return contacts;
+  }
+
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalizeFilter)
   );
 };
 
-ContactsList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-  onDeleteContact: PropTypes.func.isRequired,
+export const ContactsList = () => {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const visibleContacts = getVisibleContacts(contacts, filter);
+  
+  return (
+    <>
+      {visibleContacts.length !== 0 && (
+        <List>
+          {visibleContacts.map(({ id, name, number }) => {
+            return (
+              <Item key={id}>
+                <ContactItem
+                  id={id}
+                  name={name}
+                  number={number}
+                />
+              </Item>
+            );
+          })}
+        </List>
+      )}
+    </>
+  );
 };
+
+// ContactsList.propTypes = {
+//   contacts: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       name: PropTypes.string.isRequired,
+//       number: PropTypes.string.isRequired,
+//     })
+//   ),
+//   onDeleteContact: PropTypes.func.isRequired,
+// };
