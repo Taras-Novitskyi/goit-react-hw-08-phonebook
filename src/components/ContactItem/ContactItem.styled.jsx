@@ -6,8 +6,8 @@ export const Button = styled.button`
   justify-content: center;
 
   margin-left: 20px;
-  width: 50px;
-  height: 20px;
+  width: 52px;
+  height: 22px;
   font-size: 12px;
   background-color: rgb(230, 230, 230);
 
@@ -31,4 +31,12 @@ export const Data = styled.p`
     overflow: unset;
     white-space: normal;
     text-overflow: clip;
+  `;
+
+export const Link = styled.a`
+    text-decoration: none;
+    color: inherit;
+
+    :hover {
+    text-decoration: underline;
   `;

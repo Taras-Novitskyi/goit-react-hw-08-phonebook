@@ -1,7 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { setFilter } from 'redux/filterSlice';
 import { Box } from 'components/Box/Box';
-// import PropTypes from 'prop-types';
 import { Input } from './Fillter.styled';
 
 export const Filter = () => {
@@ -22,8 +21,3 @@ export const Filter = () => {
     </Box>
   );
 };
-
-// Filter.propTypes = {
-//   value: PropTypes.string.isRequired,
-//   onFind: PropTypes.func.isRequired,
-// };

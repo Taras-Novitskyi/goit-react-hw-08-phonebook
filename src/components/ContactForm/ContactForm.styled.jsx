@@ -2,20 +2,20 @@ import styled from 'styled-components';
 
 
 export const Form = styled.form`
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   width: 280px;
-  border: 1px solid rgb(222, 222, 222);
   padding: 20px;
   margin: 0 auto;
+  font-size: 16px;
+  border: 1px solid rgb(222, 222, 222);
 `;
 
 export const Input = styled.input`
   display: flex;
   width: 100%;
   margin-bottom: 8px;
+  margin-top: 4px;
 `;
 
 export const Button = styled.button`
@@ -24,9 +24,11 @@ export const Button = styled.button`
   justify-content: center;
 
   margin-top: 20px;
-  width: 150px;
-  height: 30px;
-  font-size: 14px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 120px;
+  height: 28px;
+  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   background-color: rgb(230, 230, 230);

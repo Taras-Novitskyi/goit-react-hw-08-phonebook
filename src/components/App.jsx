@@ -1,19 +1,21 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Box } from './Box/Box';
 import { Section } from './Section/Section';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactsList/ContactsList';
 import { Filter } from './Fillter/Fillter';
 import { fetchContacts } from 'redux/operation';
-import { getError, getIsLoading, getContacts } from 'redux/selectors';
+import { selectError, selectIsLoading, selectContacts } from 'redux/selectors';
+import { Loader } from './Loader/Loader';
 
 export function App() {
-  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
-  const isLoading = useSelector(getIsLoading);
-  const error = useSelector(getError);
-  // const { items, isLoading, error } = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -28,6 +30,7 @@ export function App() {
         alignItems: 'start',
         fontSize: 20,
         color: '#010101',
+        backgroundColor: 'rgb(100, 100, 100)'
       }}
     >
       <Box
@@ -35,6 +38,7 @@ export function App() {
         flexDirection="column"
         justifyContent="center"
         width="480px"
+        minHeight="100vh"
         p="50px"
         overflow="auto"
         borderRadius="4px"
@@ -43,22 +47,13 @@ export function App() {
         <Section title="Phonebook">
           <ContactForm />
         </Section>
-        {isLoading && !error && <b>Request in progress...</b>}
-        {contacts.length !== 0 && (
-          <Section title="Contacts">
-            <Filter />
-            <ContactsList />
-          </Section>
-        )}
+        <Section title="Contacts">
+          <Filter />
+          {isLoading && !error && <Loader />}
+          {!isLoading && contacts.length !== 0 && <ContactsList />}
+        </Section>
       </Box>
+      <ToastContainer />
     </div>
   );
- 
-  // return (
-  //   <div>
-  //     {isLoading && <b>Loading tasks...</b>}
-  //     {error && <b>{error}</b>}
-  //     <p>{items.length > 0 && JSON.stringify(items, null, 2)}</p>
-  //   </div>
-  // );
 }
