@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, getContacts } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
 import { Button } from './ContactForm.styled';
 import { Form } from './ContactForm.styled';
 import { Input } from './ContactForm.styled';
+import { addContact } from 'redux/operation';
 
 export function ContactForm() {
   const dispatch = useDispatch();
@@ -10,20 +11,18 @@ export function ContactForm() {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const userName = event.target.elements.name.value;
-    const userNumber = event.target.elements.number.value;
+    const name = event.target.elements.name.value;
+    const phone = event.target.elements.number.value;
 
-    const dublicate = contacts.find(
-      ({ name }) => name === userName
-    );
+    const dublicate = contacts.find(contact => contact.name === name);
 
       if (dublicate) {
-        alert(`${userName} is already in contacts.`);
+        alert(`${name} is already in contacts.`);
         event.target.reset();
         return
-      } 
+    }
 
-    dispatch(addContact(userName, userNumber));
+    dispatch(addContact({name, phone}));
     event.target.reset();
   };
 

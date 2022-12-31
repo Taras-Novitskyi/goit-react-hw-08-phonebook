@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 // import PropTypes from 'prop-types';
 import { ContactItem } from '../ContactItem/ContactItem';
 import { List, Item } from './ContactsList.styled';
-import { getContacts } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
 import { getFilter } from 'redux/filterSlice';
 
 const getVisibleContacts = (contacts, filter) => {
@@ -24,16 +24,12 @@ export const ContactsList = () => {
   
   return (
     <>
-      {visibleContacts.length !== 0 && (
+      {visibleContacts.length > 0 && (
         <List>
-          {visibleContacts.map(({ id, name, number }) => {
+          {visibleContacts.map(({ id, name, phone }) => {
             return (
               <Item key={id}>
-                <ContactItem
-                  id={id}
-                  name={name}
-                  number={number}
-                />
+                <ContactItem id={id} name={name} phone={phone} />
               </Item>
             );
           })}
