@@ -50,7 +50,7 @@ export function App() {
         <Section title="Contacts">
           <Filter />
           {isLoading && !error && <Loader />}
-          {!isLoading && contacts.length !== 0 && <ContactsList />}
+          {contacts.length !== 0 && <ContactsList />}
         </Section>
       </Box>
       <ToastContainer />

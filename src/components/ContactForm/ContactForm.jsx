@@ -15,12 +15,31 @@ export function ContactForm() {
     event.preventDefault();
     const name = event.target.elements.name.value;
     const inputPhone = event.target.elements.number.value;
-    const phone =
-      inputPhone.substr(0, 3) +
-      '-' +
-      inputPhone.substr(3, 3) +
-      '-' +
-      inputPhone.substr(6, 4);
+    let phone = inputPhone;
+    if (inputPhone.length <= 7) {
+      phone =
+        inputPhone.substr(0, 3) +
+        '-' +
+        inputPhone.substr(3, 2) +
+        '-' +
+        inputPhone.substr(4, 2);
+    } else if (inputPhone.length > 7 && inputPhone.length <= 10) {
+      phone =
+        inputPhone.substr(0, 3) +
+        '-' +
+        inputPhone.substr(3, 3) +
+        '-' +
+        inputPhone.substr(6, 4);
+    } else if (inputPhone.length > 10) {
+      phone =
+        inputPhone.substr(0, 3) +
+        '-' +
+        inputPhone.substr(3, 3) +
+        '-' +
+        inputPhone.substr(6, 4) +
+        '-' +
+        inputPhone.substr(10, 4);
+    }
 
     const dublicateName = contacts.find(contact => contact.name === name);
     const dublicateNumber = contacts.find(contact => contact.phone === phone);
