@@ -34,11 +34,17 @@ const ContactsView = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: '50%' }}>
-        <Section title="Your contacts">
-          {!isLoading && !error && <Filter />}
-          {isLoading && !error && <Loader />}
-          {contacts.length > 0 && <ContactsList />}
-        </Section>
+        {contacts.length > 0 ? (
+          <Section title="Your contacts">
+            {!isLoading && !error && <Filter />}
+            {isLoading && !error && <Loader />}
+            <ContactsList />
+          </Section>
+        ) : (
+          <Section title="You have no contacts">
+            {isLoading && !error && <Loader />}
+          </Section>
+        )}
       </Box>
       {
         <Box
