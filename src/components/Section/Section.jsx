@@ -1,12 +1,20 @@
 import PropTypes from 'prop-types';
 import { Title } from './Section.styled';
+import { Box } from '@mui/material';
 
 export const Section = ({ title, children }) => {
   return (
-    <div>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}
+    >
       {title && <Title>{title}</Title>}
       {children}
-    </div>
+    </Box>
   );
 };
 

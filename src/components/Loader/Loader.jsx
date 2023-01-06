@@ -1,16 +1,22 @@
 import { RotatingLines } from 'react-loader-spinner';
-import { Box } from '../Box/Box';
+import { Container } from '@mui/material';
 
 export const Loader = () => {
   return (
-    <Box display="flex" justifyContent="center" padding="10px">
+    <Container
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '2px',
+      }}
+    >
       <RotatingLines
         strokeColor="grey"
         strokeWidth="5"
         animationDuration="0.75"
-        width="96"
+        width="52"
         visible={true}
       />
-    </Box>
+    </Container>
   );
 };

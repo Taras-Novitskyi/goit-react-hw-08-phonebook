@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { Button, Box, TextField } from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import { selectContacts, selectIsLoading } from 'redux/selectors';
-import { Button } from './ContactForm.styled';
-import { Form } from './ContactForm.styled';
-import { Input } from './ContactForm.styled';
 import { addContact } from 'redux/operation';
+import { Form } from './ContactForm.styled';
 
-export function ContactForm() {
+export function ContactForm({ onSubmit }) {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
   const isLoading = useSelector(selectIsLoading);
@@ -14,35 +15,35 @@ export function ContactForm() {
   const handleSubmit = event => {
     event.preventDefault();
     const name = event.target.elements.name.value;
-    const inputPhone = event.target.elements.number.value;
-    let phone = inputPhone;
-    if (inputPhone.length <= 7) {
-      phone =
-        inputPhone.substr(0, 3) +
+    const inputNumber = event.target.elements.number.value;
+    let number = inputNumber;
+    if (inputNumber.length <= 7) {
+      number =
+        inputNumber.substr(0, 3) +
         '-' +
-        inputPhone.substr(3, 2) +
+        inputNumber.substr(3, 2) +
         '-' +
-        inputPhone.substr(4, 2);
-    } else if (inputPhone.length > 7 && inputPhone.length <= 10) {
-      phone =
-        inputPhone.substr(0, 3) +
+        inputNumber.substr(4, 2);
+    } else if (inputNumber.length > 7 && inputNumber.length <= 10) {
+      number =
+        inputNumber.substr(0, 3) +
         '-' +
-        inputPhone.substr(3, 3) +
+        inputNumber.substr(3, 3) +
         '-' +
-        inputPhone.substr(6, 4);
-    } else if (inputPhone.length > 10) {
-      phone =
-        inputPhone.substr(0, 3) +
+        inputNumber.substr(6, 4);
+    } else if (inputNumber.length > 10) {
+      number =
+        inputNumber.substr(0, 3) +
         '-' +
-        inputPhone.substr(3, 3) +
+        inputNumber.substr(3, 3) +
         '-' +
-        inputPhone.substr(6, 4) +
+        inputNumber.substr(6, 4) +
         '-' +
-        inputPhone.substr(10, 4);
+        inputNumber.substr(10, 4);
     }
 
     const dublicateName = contacts.find(contact => contact.name === name);
-    const dublicateNumber = contacts.find(contact => contact.phone === phone);
+    const dublicateNumber = contacts.find(contact => contact.phone === number);
 
     if (dublicateName) {
       toast.error(`${name} is already in contacts.`);
@@ -51,42 +52,59 @@ export function ContactForm() {
     }
 
     if (dublicateNumber) {
-      toast.error(`Contact with number ${phone} is already in contacts.`);
+      toast.error(`Contact with number ${number} is already in contacts.`);
       event.target.reset();
       return;
     }
 
-    dispatch(addContact({ name, phone }));
+    onSubmit();
+    dispatch(addContact({ name, number }));
     event.target.reset();
     toast.success(`Contact ${name} is added in contacts.`);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <label>
-        Name
-        <Input
+      <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+        <AccountCircle sx={{ color: 'action.active', mr: 1, mb: 1 }} />
+        <TextField
+          label="name"
+          variant="standard"
           type="text"
           name="name"
           placeholder="Will Smith"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          inputProps={{
+            inputMode: 'numeric',
+            pattern:
+              "^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$",
+          }}
+          margin="normal"
           required
         />
-      </label>
-      <label>
-        Number
-        <Input
-          type="tel"
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+        <PhoneIphoneIcon sx={{ color: 'action.active', mr: 1, mb: 1 }} />
+        <TextField
+          label="number"
+          variant="standard"
+          type="text"
           name="number"
           placeholder="123-456-7890"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          inputProps={{
+            inputMode: 'numeric',
+            pattern: '[0-9]*',
+          }}
+          margin="normal"
           required
         />
-      </label>
-
-      <Button type="submit" disabled={isLoading}>
+      </Box>
+      <Button
+        type="submit"
+        disabled={isLoading}
+        variant="contained"
+        size="small"
+        sx={{ mt: 4 }}
+      >
         Add contact
       </Button>
     </Form>

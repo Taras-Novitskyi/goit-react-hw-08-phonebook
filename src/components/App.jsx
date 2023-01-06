@@ -1,59 +1,66 @@
-import { useEffect } from 'react';
+import { useEffect, lazy } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Box } from './Box/Box';
-import { Section } from './Section/Section';
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactsList } from './ContactsList/ContactsList';
-import { Filter } from './Fillter/Fillter';
-import { fetchContacts } from 'redux/operation';
-import { selectError, selectIsLoading, selectContacts } from 'redux/selectors';
-import { Loader } from './Loader/Loader';
+import { Box } from 'components/Box/Box';
+import { authOperations, authSelectors } from 'redux/auth';
+import { PrivateRoute } from './PrivateRoute';
+import { RestrictedRoute } from './RestrictedRoute';
+import { Layout } from './Layout/Layout';
+
+const HomeView = lazy(() => import('../pages/HomePage/HomePage'));
+const ContactsView = lazy(() => import('../pages/ContactsPage/ContactsPage'));
+const LoginView = lazy(() => import('../pages/LoginView/LoginPage'));
+const RegisterView = lazy(() => import('../pages/RegisterPage/RegisterPage'));
 
 export function App() {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
+  const isRefreshing = useSelector(authSelectors.selectIsRefreshing);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(authOperations.fetchCurrentUser());
   }, [dispatch]);
 
-  return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'start',
-        fontSize: 20,
-        color: '#010101',
-        backgroundColor: 'rgb(100, 100, 100)'
-      }}
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        width="480px"
-        minHeight="100vh"
-        p="50px"
-        overflow="auto"
-        borderRadius="4px"
-        bg="rgb(249, 249, 249)"
-      >
-        <Section title="Phonebook">
-          <ContactForm />
-        </Section>
-        <Section title="Contacts">
-          <Filter />
-          {isLoading && !error && <Loader />}
-          {contacts.length !== 0 && <ContactsList />}
-        </Section>
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
+    <div>
+      <Box backgroundColor="rgb(249, 249, 249)" minHeight="100vh">
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomeView />} />
+            <Route
+              path="/register"
+              element={
+                <RestrictedRoute
+                  redirectTo="/contacts"
+                  component={<RegisterView />}
+                />
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <RestrictedRoute
+                  redirectTo="/contacts"
+                  component={<LoginView />}
+                />
+              }
+            />
+            <Route
+              path="/contacts"
+              element={
+                <PrivateRoute
+                  redirectTo="/login"
+                  component={<ContactsView />}
+                />
+              }
+            />
+          </Route>
+        </Routes>
+        <ToastContainer />
       </Box>
-      <ToastContainer />
     </div>
   );
 }
